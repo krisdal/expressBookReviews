@@ -30,12 +30,33 @@ public_users.post("/register", function (req, res) {
   return res.status(404).json({ message: "Unable to register user." });
 });
 
+// Function to return a promise that resolves with the list of books
+function getBooks() {
+  return new Promise((resolve, reject) => {
+    // Simulate async operation, like fetching from a database
+    if (books) {
+      resolve(books); // Resolve the promise with the books data
+    } else {
+      reject("No books found"); // Reject the promise if something goes wrong
+    }
+  });
+}
+
+
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
   //Write your code here
-  return res.send(JSON.stringify({ books }, null, 2));
+  getBooks()
+    .then((books) => {
+      res.status(200).json(books);
+    })
+    .catch((error) => {
+      res.status(500).json({ message: error });
+    });
+  //  return res.send(JSON.stringify({ books }, null, 2));
   //return res.status(300).json({ message: "Yet to be implemented" });
 });
+
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
